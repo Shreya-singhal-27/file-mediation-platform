@@ -1,0 +1,12 @@
+{
+    "type": "LOCAL",
+    "source_path": "uploads",
+    "archive_path": "archive",
+    "rejected_path": "rejected",
+    "allowed_extensions": [
+        ".csv",
+        ".txt",
+        ".dat",
+        ".asn"
+    ]
+}

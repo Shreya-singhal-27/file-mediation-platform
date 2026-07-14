@@ -1,0 +1,15 @@
+{
+    "host": "127.0.0.1",
+    "port": 21,
+    "username": "ftpuser",
+    "password": "password",
+    "remote_directory": "/incoming",
+    "local_download_directory": "uploads",
+    "archive_directory": "archive",
+    "rejected_directory": "rejected",
+    "allowed_extensions": [
+        ".csv",
+        ".txt",
+        ".dat"
+    ]
+}
