@@ -1,0 +1,45 @@
+# Virtual Environment
+venv/
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# VS Code
+.vscode/
+
+# Logs
+logs/
+*.log
+
+# Uploaded Files
+uploads/
+processed/
+archive/
+rejected/
+
+# Alembic cache
+alembic/__pycache__/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+dist/
+build/
+*.egg-info/
+
+# SQLite
+*.sqlite3
