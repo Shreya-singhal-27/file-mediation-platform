@@ -7,6 +7,7 @@ from typing import Any
 from app.models.mapping_rule import MappingRule
 from app.schemas.transformation import OutputSchema, TransformationFieldMapping, TransformationResult
 from app.services.transformation.transformation_engine import TransformationEngine
+from app.utils.coercion import coerce_value
 
 
 class TransformationManager:
@@ -63,7 +64,7 @@ class TransformationManager:
 			target_field=mapping.target_field,
 			transformation_type=str(mapping.transformation_type).upper(),
 			parameters={},
-			default_value=self._coerce_value(mapping.default_value),
+			default_value=coerce_value(mapping.default_value),
 			required=mapping.is_required,
 		)
 
@@ -93,26 +94,6 @@ class TransformationManager:
 			target_field=str(target_field),
 			transformation_type=str(transformation_type).upper(),
 			parameters=parameters,
-			default_value=self._coerce_value(mapping.get("default_value")),
+			default_value=coerce_value(mapping.get("default_value")),
 			required=bool(mapping.get("required", False)),
 		)
-
-	@staticmethod
-	def _coerce_value(value: Any) -> Any:
-		"""Normalize configured values into types suitable for transformation."""
-		if value is None or isinstance(value, (int, float, bool, list, dict, tuple, set)):
-			return value
-
-		if isinstance(value, str):
-			stripped_value = value.strip()
-			if stripped_value.lower() == "null":
-				return None
-
-			try:
-				return json.loads(stripped_value)
-			except json.JSONDecodeError:
-				if "," in stripped_value:
-					return [part.strip() for part in stripped_value.split(",") if part.strip()]
-				return stripped_value
-
-		return value

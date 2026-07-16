@@ -8,6 +8,7 @@ from app.models.filter_rule import FilterRule
 from app.schemas.filtering import FilterCondition, FilterGroup, FilterResult
 from app.services.filtering.base_filter import FilterRuleDefinition
 from app.services.filtering.filter_engine import FilterEngine
+from app.utils.coercion import coerce_value
 
 
 class FilterManager:
@@ -70,7 +71,7 @@ class FilterManager:
         condition = FilterCondition(
             field_name=rule.field_name,
             operator=rule.operator,
-            value=self._coerce_value(rule.value),
+            value=coerce_value(rule.value),
         )
         return FilterRuleDefinition(
             rule_id=str(rule.id),
@@ -90,30 +91,10 @@ class FilterManager:
         condition = FilterCondition(
             field_name=str(field_name),
             operator=str(operator),
-            value=self._coerce_value(rule.get("value")),
+            value=coerce_value(rule.get("value")),
         )
         return FilterRuleDefinition(
             rule_id=rule_id,
             rule=condition,
             priority=int(rule.get("priority", priority)),
         )
-
-    @staticmethod
-    def _coerce_value(value: Any) -> Any:
-        """Normalize configured values into types suitable for comparisons."""
-        if value is None or isinstance(value, (int, float, bool, list, dict, tuple, set)):
-            return value
-
-        if isinstance(value, str):
-            stripped_value = value.strip()
-            if stripped_value.lower() == "null":
-                return None
-
-            try:
-                return json.loads(stripped_value)
-            except json.JSONDecodeError:
-                if "," in stripped_value:
-                    return [part.strip() for part in stripped_value.split(",") if part.strip()]
-                return stripped_value
-
-        return value

@@ -2,9 +2,6 @@ from app.schemas.acquisition import AcquiredFile
 from app.services.acquisition.base_acquisition import (
 	BaseAcquisitionService,
 )
-from app.services.acquisition.ftp_service import FTPService
-from app.services.acquisition.local_service import LocalService
-from app.services.acquisition.sftp_service import SFTPService
 
 
 class AcquisitionManager:
@@ -17,9 +14,9 @@ class AcquisitionManager:
 	"""
 
 	SERVICE_MAP = {
-		"LOCAL": LocalService,
-		"FTP": FTPService,
-		"SFTP": SFTPService,
+		"LOCAL": "LocalService",
+		"FTP": "FTPService",
+		"SFTP": "SFTPService",
 	}
 
 	def __init__(
@@ -36,7 +33,7 @@ class AcquisitionManager:
 				f"Unsupported acquisition source: {source_type}"
 			)
 
-		service_class = self.SERVICE_MAP[source_type]
+		service_class = self._resolve_service_class(source_type)
 
 		if config_path is None:
 			self.service: BaseAcquisitionService = service_class()
@@ -125,3 +122,26 @@ class AcquisitionManager:
 		"""
 
 		self.disconnect()
+
+	@classmethod
+	def _resolve_service_class(
+		cls,
+		source_type: str,
+	) -> type[BaseAcquisitionService]:
+		"""Resolve a concrete acquisition service lazily to avoid unnecessary imports."""
+		if source_type == "LOCAL":
+			from app.services.acquisition.local_service import LocalService
+
+			return LocalService
+
+		if source_type == "FTP":
+			from app.services.acquisition.ftp_service import FTPService
+
+			return FTPService
+
+		if source_type == "SFTP":
+			from app.services.acquisition.sftp_service import SFTPService
+
+			return SFTPService
+
+		raise ValueError(f"Unsupported acquisition source: {source_type}")

@@ -61,6 +61,26 @@ class JobService:
 
 		return self.job_repository.complete_job(job)
 
+	def update_job(
+		self,
+		job: Job,
+	) -> Job:
+
+		return self.job_repository.update(job)
+
+	def append_job_log(
+		self,
+		job: Job,
+		message: str,
+	) -> Job:
+
+		job.job_log = (
+			f"{job.job_log}\n{message}" if job.job_log else message
+		)
+
+		return self.job_repository.update(job)
+
+
 	def fail_job(
 		self,
 		job: Job,

@@ -1,30 +1,24 @@
 from pathlib import Path
 
-from app.services.decoder.asn_decoder import ASN1Decoder
 from app.services.decoder.base_decoder import BaseDecoder
-from app.services.decoder.csv_decoder import CSVDecoder
 from app.services.decoder.exceptions import (
 	UnsupportedDecoderException,
 )
-from app.services.decoder.fixed_width_decoder import (
-	FixedWidthDecoder,
-)
-from app.services.decoder.pipe_decoder import PipeDecoder
 
 
 class DecoderFactory:
 
 	_DECODER_MAP = {
 
-		".dat": ASN1Decoder,
+		".dat": "ASN1Decoder",
 
-		".csv": CSVDecoder,
+		".csv": "CSVDecoder",
 
-		".fw": FixedWidthDecoder,
+		".fw": "FixedWidthDecoder",
 
-		".pipe": PipeDecoder,
+		".pipe": "PipeDecoder",
 
-		".txt": PipeDecoder,
+		".txt": "PipeDecoder",
 
 	}
 
@@ -49,7 +43,8 @@ class DecoderFactory:
 				f"No decoder available for '{extension}'."
 			)
 
-		if decoder is ASN1Decoder:
+		if extension == ".dat":
+			from app.services.decoder.asn_decoder import ASN1Decoder
 
 			schema_path = kwargs.get(
 				"schema_path",
@@ -70,7 +65,8 @@ class DecoderFactory:
 				record_type=record_type,
 			)
 
-		if decoder is FixedWidthDecoder:
+		if extension == ".fw":
+			from app.services.decoder.fixed_width_decoder import FixedWidthDecoder
 
 			return FixedWidthDecoder(
 				column_specifications=kwargs.get(
@@ -79,7 +75,19 @@ class DecoderFactory:
 				),
 			)
 
-		return decoder()
+		if extension == ".csv":
+			from app.services.decoder.csv_decoder import CSVDecoder
+
+			return CSVDecoder()
+
+		if extension in {".pipe", ".txt"}:
+			from app.services.decoder.pipe_decoder import PipeDecoder
+
+			return PipeDecoder()
+
+		raise UnsupportedDecoderException(
+			f"No decoder available for '{extension}'."
+		)
 
 	@classmethod
 	def supported_extensions(
