@@ -6,6 +6,7 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.api.filtering import router as filtering_router
+from app.api.transform import router as transformation_router
 from app.config import Settings, get_settings
 from app.core.logger import configure_logger
 from app.dependencies import get_app_settings, get_db
@@ -39,6 +40,7 @@ app.add_middleware(
 )
 
 app.include_router(filtering_router)
+app.include_router(transformation_router)
 
 
 @app.get("/health", tags=["Health"])

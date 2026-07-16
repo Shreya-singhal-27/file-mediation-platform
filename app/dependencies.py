@@ -13,6 +13,7 @@ from app.services.filtering.filter_manager import FilterManager
 if TYPE_CHECKING:
 	from app.business.auth_service import AuthService
 	from app.business.pipeline_service import PipelineService
+	from app.services.transformation.transformation_manager import TransformationManager
 
 
 def get_app_settings() -> Settings:
@@ -51,3 +52,9 @@ def get_pipeline_service(
 
 def get_filter_manager() -> FilterManager:
 	return FilterManager()
+
+
+def get_transformation_manager() -> "TransformationManager":
+	from app.services.transformation.transformation_manager import TransformationManager
+
+	return TransformationManager()
