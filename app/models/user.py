@@ -1,10 +1,16 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.base import Base
+
+if TYPE_CHECKING:
+    from app.models.audit_log import AuditLog
+    from app.models.job import Job
+    from app.models.pipeline import Pipeline
+    from app.models.role import Role
 
 
 class User(Base):

@@ -1,10 +1,18 @@
 from datetime import datetime
-from typing import List
+from typing import TYPE_CHECKING, List
 
 from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.base import Base
+
+if TYPE_CHECKING:
+    from app.models.destination import Destination
+    from app.models.filter_rule import FilterRule
+    from app.models.job import Job
+    from app.models.mapping_rule import MappingRule
+    from app.models.source import Source
+    from app.models.user import User
 
 
 class Pipeline(Base):

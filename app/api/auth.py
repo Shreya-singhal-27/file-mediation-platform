@@ -5,6 +5,7 @@ from app.dependencies import get_auth_service
 from app.schemas.auth import (
 	AuthResponse,
 	LoginRequest,
+	RefreshTokenRequest,
 	Token,
 )
 from app.schemas.user import UserCreate
@@ -54,13 +55,12 @@ def register(
 			detail=str(exc),
 		)
 
-
 @router.post(
 	"/refresh",
 	response_model=Token,
 )
 def refresh_token(
-	request: Token,
+	request: RefreshTokenRequest,
 	auth_service: AuthService = Depends(
 		get_auth_service,
 	),
