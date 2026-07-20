@@ -37,7 +37,7 @@ def _dec_null(
     return None
 
 
-def _dec_raw(
+def decode_raw(
     mv: memoryview,
     n: int,
 ) -> str:
