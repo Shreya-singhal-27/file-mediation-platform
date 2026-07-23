@@ -81,14 +81,14 @@ CORS_ALLOW_METHODS=["*"]
 CORS_ALLOW_HEADERS=["*"]
 
 # Database configuration (PostgreSQL)
-DATABASE_URL=postgresql+psycopg2://postgres:postgres123@localhost:5432/file_mediation
+DATABASE_URL=postgresql+psycopg2://postgres:yourPassword@localhost:5432/file_mediation
 
 # Logging Setup
 LOG_LEVEL=INFO
 LOG_PATH=logs/application.log
 
 # Authentication Secrets
-SECRET_KEY=7d4f2a91b8e34c5f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a9b8c7d6e5
+SECRET_KEY=your-secret-key
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=60
 REFRESH_TOKEN_EXPIRE_DAYS=7
