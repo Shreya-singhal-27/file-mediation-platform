@@ -8,7 +8,7 @@ from app.schemas.auth import (
 	RefreshTokenRequest,
 	Token,
 )
-from app.schemas.user import UserCreate
+from app.schemas.user import UserCreate, UserResponse
 
 router = APIRouter(
 	prefix="/auth",
@@ -40,6 +40,7 @@ def login(
 
 @router.post(
 	"/register",
+	response_model=UserResponse,
 )
 def register(
 	request: UserCreate,

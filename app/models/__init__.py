@@ -7,6 +7,9 @@ from app.models.pipeline import Pipeline
 from app.models.role import Role
 from app.models.source import Source
 from app.models.user import User
+from sqlalchemy.orm import configure_mappers
+
+configure_mappers()
 
 __all__ = [
 	"AuditLog",
