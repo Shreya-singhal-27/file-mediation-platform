@@ -1,0 +1,74 @@
+
+============================================================
+  INPUT FILE CREATED
+============================================================
+  Location : C:\Users\hp\AppData\Local\Temp\file_mediation_e2e\source\employees.csv
+  Records  : 6
+
+  Contents:
+    emp_id,full_name,department,salary,status
+    E001,Alice Johnson,Engineering,85000,ACTIVE
+    E002,Bob Williams,Marketing,62000,ACTIVE
+    E003,Charlie Brown,Engineering,91000,INACTIVE
+    E004,Diana Martinez,HR,58000,ACTIVE
+    E005,Eve Davis,Engineering,95000,ACTIVE
+    E006,Frank Wilson,Marketing,45000,ACTIVE
+
+============================================================
+  SETTING UP DATABASE
+============================================================
+  [OK] User created (id=8)
+
+---STDERR---
+(trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\hp\Desktop\file-mediation-platform\venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+Traceback (most recent call last):
+  File "C:\Users\hp\Desktop\file-mediation-platform\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\hp\Desktop\file-mediation-platform\venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.SyntaxError: syntax error at or near ":"
+LINE 3:     VALUES ('e2e_local_source', 'LOCAL', :cfg::jsonb, true, ...
+                                                 ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\hp\Desktop\file-mediation-platform\scripts\run_pipeline_e2e.py", line 125, in <module>
+    db_execute("""
+  File "C:\Users\hp\Desktop\file-mediation-platform\scripts\run_pipeline_e2e.py", line 82, in db_execute
+    conn.execute(text(sql), params)
+  File "C:\Users\hp\Desktop\file-mediation-platform\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\hp\Desktop\file-mediation-platform\venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\hp\Desktop\file-mediation-platform\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\hp\Desktop\file-mediation-platform\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\hp\Desktop\file-mediation-platform\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\hp\Desktop\file-mediation-platform\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\hp\Desktop\file-mediation-platform\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\hp\Desktop\file-mediation-platform\venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.SyntaxError) syntax error at or near ":"
+LINE 3:     VALUES ('e2e_local_source', 'LOCAL', :cfg::jsonb, true, ...
+                                                 ^
+
+[SQL: 
+    INSERT INTO sources (name, source_type, config, is_active, created_at, updated_at)
+    VALUES ('e2e_local_source', 'LOCAL', :cfg::jsonb, true, NOW(), NOW())
+]
+(Background on this error at: https://sqlalche.me/e/20/f405)

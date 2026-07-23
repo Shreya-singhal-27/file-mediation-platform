@@ -1,0 +1,262 @@
+
+--- Pre-cleaning test data...
+
+==================================================
+  SETUP: Register + Login for auth token
+==================================================
+  Register: HTTP 200
+  [PASS] User registered
+  Login: HTTP 200
+  [PASS] Login successful
+  Got token for user_id=7
+
+==================================================
+  SETUP: Seed Source and Destination in DB
+==================================================
+  [PASS] Source seeded in DB
+  [PASS] Destination seeded in DB
+  source_id=2, destination_id=2
+
+==================================================
+  STEP 1: POST /filtering/evaluate
+==================================================
+  HTTP 200
+  Response: {
+  "accepted_records": [
+    {
+      "name": "Alice",
+      "age": 30,
+      "status": "ACTIVE"
+    },
+    {
+      "name": "Charlie",
+      "age": 25,
+      "status": "ACTIVE"
+    },
+    {
+      "name": "Diana",
+      "age": 45,
+      "status": "ACTIVE"
+    }
+  ],
+  "rejected_records": [
+    {
+      "original_record": {
+        "name": "Bob",
+        "age": 17,
+        "status": "INACTIVE"
+      },
+      "reject_reason": "Field 'status' with value 'INACTIVE' did not satisfy operator '=' against expected value 'ACTIVE'.",
+      "rule_id": "status",
+      "timestamp": "2026-07-23T10:51:05.131921Z"
+    }
+  ],
+  "statistics": {
+    "total_records": 4,
+    "accepted_records": 3,
+    "rejected_records": 1
+  }
+}
+  [PASS] Status code is 200
+  [PASS] total_records is 4
+  [PASS] accepted_records is 3
+  [PASS] rejected_records is 1
+  [PASS] Alice accepted
+  [PASS] Charlie accepted
+  [PASS] Diana accepted
+  [PASS] 1 rejected record (Bob)
+  [PASS] Rejected record is Bob
+
+==================================================
+  STEP 2: POST /pipelines (create)
+==================================================
+  Without auth: HTTP 401
+  [PASS] Create without auth returns 401
+  With auth: HTTP 200
+  Response: {
+  "name": "verify_test_pipeline_01",
+  "description": "Test pipeline for endpoint verification",
+  "source_id": 2,
+  "destination_id": 2,
+  "schedule": null,
+  "decoder_type": "CSV",
+  "output_format": "CSV",
+  "archive_enabled": true,
+  "retry_count": 3,
+  "id": 3,
+  "created_by_id": 7,
+  "is_active": true,
+  "created_at": "2026-07-23T10:51:05.140752",
+  "updated_at": "2026-07-23T10:51:05.140752"
+}
+  [PASS] Status code is 200
+  [PASS] Response has 'id'
+  [PASS] Name matches
+  [PASS] source_id matches
+  [PASS] destination_id matches
+  [PASS] decoder_type is CSV
+  [PASS] is_active is True
+  [PASS] created_by_id matches user
+
+  [DB] Verification:
+  [PASS] Pipeline exists in DB
+  [PASS] DB name correct
+  [PASS] DB source_id correct
+  [PASS] DB destination_id correct
+  [PASS] DB decoder_type correct
+  [PASS] DB is_active is True
+  [PASS] DB created_by_id matches
+
+  Duplicate name: HTTP 400
+  [PASS] Duplicate name returns 400
+
+==================================================
+  STEP 3: GET /pipelines (list all)
+==================================================
+  HTTP 200
+  [PASS] Status code is 200
+  [PASS] Response is a list
+  [PASS] At least 1 pipeline in list
+  [PASS] Our test pipeline is in the list
+  [PASS] Listed pipeline name matches
+  [PASS] Listed pipeline has created_at
+
+==================================================
+  STEP 4: GET /pipelines/{id}
+==================================================
+  HTTP 200
+  Response: {
+  "name": "verify_test_pipeline_01",
+  "description": "Test pipeline for endpoint verification",
+  "source_id": 2,
+  "destination_id": 2,
+  "schedule": null,
+  "decoder_type": "CSV",
+  "output_format": "CSV",
+  "archive_enabled": true,
+  "retry_count": 3,
+  "id": 3,
+  "created_by_id": 7,
+  "is_active": true,
+  "created_at": "2026-07-23T10:51:05.140752",
+  "updated_at": "2026-07-23T10:51:05.140752"
+}
+  [PASS] Status code is 200
+  [PASS] id matches
+  [PASS] name matches
+  [PASS] description matches
+  [PASS] source_id matches
+  [PASS] decoder_type matches
+  Non-existent ID: HTTP 404
+  [PASS] Non-existent pipeline returns 404
+
+==================================================
+  STEP 5: PUT /pipelines/{id} (update)
+==================================================
+  HTTP 200
+  Response: {
+  "name": "verify_test_pipeline_updated",
+  "description": "Updated description",
+  "source_id": 2,
+  "destination_id": 2,
+  "schedule": null,
+  "decoder_type": "CSV",
+  "output_format": "CSV",
+  "archive_enabled": true,
+  "retry_count": 5,
+  "id": 3,
+  "created_by_id": 7,
+  "is_active": false,
+  "created_at": "2026-07-23T10:51:05.140752",
+  "updated_at": "2026-07-23T10:51:05.170285"
+}
+  [PASS] Status code is 200
+  [PASS] Name updated
+  [PASS] Description updated
+  [PASS] retry_count updated to 5
+  [PASS] is_active updated to False
+  [PASS] source_id unchanged
+  [PASS] decoder_type unchanged
+
+  [DB] Verification:
+  [PASS] DB name updated
+  [PASS] DB description updated
+  [PASS] DB retry_count is 5
+  [PASS] DB is_active is False
+
+==================================================
+  STEP 6: DELETE /pipelines/{id}
+==================================================
+  HTTP 200
+  Response: {
+  "message": "Pipeline deleted successfully."
+}
+  [PASS] Status code is 200
+  [PASS] Message says deleted
+
+  [DB] Verification:
+  [PASS] Pipeline removed from DB
+  GET after delete: HTTP 404
+  [PASS] GET deleted pipeline returns 404
+  Delete non-existent: HTTP 404
+  [PASS] Delete non-existent returns 404
+
+==================================================
+  STEP 7: POST /transformations/execute
+==================================================
+  HTTP 200
+  Response: {
+  "transformed_records": [
+    {
+      "user_id": "101",
+      "name": "Alice Smith",
+      "premium_flag": true,
+      "account_balance": "1250.50"
+    },
+    {
+      "user_id": "102",
+      "name": "Bob Jones",
+      "premium_flag": false,
+      "account_balance": "340.00"
+    },
+    {
+      "user_id": "103",
+      "name": "Charlie Brown",
+      "premium_flag": true,
+      "account_balance": "5600.75"
+    }
+  ],
+  "rejected_records": [],
+  "statistics": {
+    "total_records": 3,
+    "transformed_records": 3,
+    "rejected_records": 0
+  }
+}
+  [PASS] Status code is 200
+  [PASS] total_records is 3
+  [PASS] transformed_records count
+  [PASS] rejected_records is 0
+  [PASS] 3 transformed records returned
+  [PASS] Alice user_id is '101'
+  [PASS] Alice name is 'Alice Smith'
+  [PASS] Alice has premium_flag
+  [PASS] Alice has account_balance
+
+  Empty records: HTTP 200
+  [PASS] Empty records returns 200
+  [PASS] Empty records -> 0 transformed
+
+==================================================
+  CLEANUP
+==================================================
+  [PASS] Test pipelines cleaned up
+  [PASS] Test source cleaned up
+  [PASS] Test destination cleaned up
+  [PASS] Test user cleaned up
+
+==================================================
+  RESULTS:  74 passed, 0 failed
+==================================================
+
+---STDERR---

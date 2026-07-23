@@ -9,6 +9,10 @@ from sqlalchemy.orm import Session
 from app.config import Settings, get_settings
 from app.database.session import SessionLocal
 from app.services.filtering.filter_manager import FilterManager
+from app.services.pipeline.pipeline_manager import PipelineManager
+from app.business.job_service import JobService
+from app.business.user_service import UserService
+from app.services.audit.audit_service import AuditService
 
 if TYPE_CHECKING:
 	from app.business.auth_service import AuthService
@@ -58,3 +62,35 @@ def get_transformation_manager() -> "TransformationManager":
 	from app.services.transformation.transformation_manager import TransformationManager
 
 	return TransformationManager()
+
+def get_user_service(
+	db: Session = Depends(get_db),
+) -> UserService:
+	from app.repositories.user_repository import UserRepository
+
+	return UserService(
+		UserRepository(db),
+	)
+
+
+def get_job_service(
+	db: Session = Depends(get_db),
+) -> JobService:
+	from app.repositories.job_repository import JobRepository
+
+	return JobService(
+		JobRepository(db),
+	)
+
+
+def get_audit_service(
+	db: Session = Depends(get_db),
+) -> AuditService:
+	from app.repositories.audit_log_repository import AuditLogRepository
+
+	return AuditService(
+		AuditLogRepository(db),
+	)
+	
+def get_pipeline_manager():
+	return PipelineManager()
