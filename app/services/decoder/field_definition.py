@@ -4,7 +4,7 @@ from typing import List
 
 
 @dataclass(frozen=True)
-class FieldDef:
+class FieldDefinition:
 	"""
 	Represents a single ASN.1 field.
 	"""
@@ -30,5 +30,5 @@ class ParsedSchema:
 
 	records: Dict[
 		str,
-		List[FieldDef],
+		List[FieldDefinition],
 	]

@@ -3,6 +3,8 @@
     "source_path": "uploads",
     "archive_path": "archive",
     "rejected_path": "rejected",
+    "schema_path": "schemas/ims.asn1",
+    "record_type": "IMSVoiceRecord",    
     "allowed_extensions": [
         ".csv",
         ".txt",

@@ -5,9 +5,15 @@ from collections.abc import Sequence
 from typing import Any
 
 from app.models.mapping_rule import MappingRule
-from app.schemas.transformation import OutputSchema, TransformationFieldMapping, TransformationResult
+from app.schemas.transformation import (
+	OutputSchema,
+	TransformationFieldMapping,
+	TransformationResult,
+	TransformationStatistics,
+)
 from app.services.transformation.transformation_engine import TransformationEngine
 from app.utils.coercion import coerce_value
+
 
 
 class TransformationManager:
@@ -23,9 +29,26 @@ class TransformationManager:
 		output_schema: OutputSchema | dict[str, Any] | None = None,
 	) -> TransformationResult:
 		"""Transform records using configurable mapping definitions and optional output schema."""
+
+		if not mappings:
+			return TransformationResult(
+				transformed_records=[dict(record) for record in records],
+				rejected_records=[],
+				statistics=TransformationStatistics(
+					total_records=len(records),
+					transformed_records=len(records),
+					rejected_records=0,
+				),
+			)
+
 		normalized_mappings = self._normalize_mappings(mappings)
 		normalized_schema = self._normalize_output_schema(output_schema)
-		return self._transformation_engine.transform(records, normalized_mappings, normalized_schema)
+
+		return self._transformation_engine.transform(
+			records,
+			normalized_mappings,
+			normalized_schema,
+		)
 
 	def _normalize_mappings(
 		self,

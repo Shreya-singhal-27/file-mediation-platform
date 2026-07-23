@@ -1,45 +1,64 @@
-# Virtual Environment
-venv/
-.env
-
+# ==========================
 # Python
+# ==========================
 __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
 
-# VS Code
-.vscode/
+# Virtual Environment
+venv/
+.venv/
+.env
 
+# ==========================
+# IDE
+# ==========================
+.vscode/
+.idea/
+*.iml
+
+# ==========================
 # Logs
+# ==========================
 logs/
 *.log
 
-# Uploaded Files
+# ==========================
+# Runtime Generated Files
+# ==========================
 uploads/
 processed/
 archive/
 rejected/
 
-# Alembic cache
-alembic/__pycache__/
-
+# ==========================
 # Testing
+# ==========================
 .pytest_cache/
 .coverage
 htmlcov/
 
-# IDE
-.idea/
+# ==========================
+# Alembic
+# ==========================
+alembic/__pycache__/
 
-# OS
-.DS_Store
-Thumbs.db
-
+# ==========================
 # Build
-dist/
+# ==========================
 build/
+dist/
 *.egg-info/
 
-# SQLite
+# ==========================
+# Database
+# ==========================
 *.sqlite3
+*.db
+
+# ==========================
+# OS
+# ==========================
+.DS_Store
+Thumbs.db

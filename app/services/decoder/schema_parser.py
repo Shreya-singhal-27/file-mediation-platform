@@ -5,7 +5,7 @@ from typing import List
 from typing import Tuple
 
 from app.services.decoder.field_definition import (
-	FieldDef,
+	FieldDefinition,
 	ParsedSchema,
 )
 
@@ -136,7 +136,7 @@ def parse_schema(
 
 	records: Dict[
 		str,
-		List[FieldDef],
+		List[FieldDefinition],
 	] = {}
 
 	for type_match in _TYPEDEF_RE.finditer(
@@ -153,7 +153,7 @@ def parse_schema(
 		)
 
 		fields: List[
-			FieldDef
+			FieldDefinition
 		] = []
 
 		seen_tags = set()
@@ -177,7 +177,7 @@ def parse_schema(
 
 			fields.append(
 
-				FieldDef(
+				FieldDefinition(
 
 					tag_num=tag,
 

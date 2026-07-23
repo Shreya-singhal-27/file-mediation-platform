@@ -1,5 +1,7 @@
 import mmap
 import os
+import csv
+import json
 
 from pathlib import Path
 from typing import Any
@@ -267,7 +269,7 @@ class ASN1Decoder(BaseDecoder):
 
                 while pos < len(mv):
                     pos += 1                           
-                    outer_len, pos = _decode_ber_length(mv, pos)
+                    outer_len, pos = decode_ber_length(mv, pos)
 
                     try:
                         rec = self.decode_record(mv, pos, outer_len)
